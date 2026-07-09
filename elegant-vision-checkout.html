@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout · ELEGANT VISION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="elegant-vision.css">
+<style>
+:root{--container:1100px}
+.site-header{position:static;backdrop-filter:none;-webkit-backdrop-filter:none}
+.secure-badge{display:flex;align-items:center;gap:var(--space-sm);font-size:var(--text-xs);letter-spacing:.18em;text-transform:uppercase;color:var(--color-text-muted)}
+.secure-badge svg{color:var(--color-champagne)}
+
+.steps-bar{display:flex;justify-content:center;gap:var(--space-xl);padding-block:var(--space-lg);border-bottom:1px solid var(--color-line-soft);font-size:var(--text-xs);letter-spacing:.2em;text-transform:uppercase}
+.steps-bar span{color:var(--color-text-muted);display:flex;align-items:center;gap:var(--space-sm)}
+.steps-bar span::before{content:attr(data-step);display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--color-line-soft);border-radius:999px;font-size:.65rem}
+.steps-bar span.is-active{color:var(--color-champagne)}
+.steps-bar span.is-active::before{border-color:var(--color-champagne)}
+.steps-bar span.is-done{color:var(--color-success)}
+.steps-bar span.is-done::before{content:"✓";border-color:var(--color-success)}
+
+.checkout-layout{display:grid;gap:var(--space-2xl);grid-template-columns:1fr;padding-block:var(--space-2xl) var(--space-3xl)}
+.checkout-steps{display:flex;flex-direction:column;gap:var(--space-lg)}
+.step{border:1px solid var(--color-line-soft)}
+.step__head{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--color-text);padding:var(--space-lg);cursor:pointer;text-align:left}
+.step__title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:500;display:flex;align-items:center;gap:var(--space-md)}
+.step__number{font-family:var(--font-body);font-size:var(--text-xs);color:var(--color-champagne);letter-spacing:.2em}
+.step__status{font-size:var(--text-xs);letter-spacing:.16em;text-transform:uppercase;color:var(--color-text-muted)}
+.step__status.is-done{color:var(--color-success)}
+.step__body{padding:0 var(--space-lg) var(--space-lg);display:none;flex-direction:column;gap:var(--space-md)}
+.step.is-open .step__body{display:flex}
+.field-row{display:grid;gap:var(--space-md);grid-template-columns:1fr}
+.form-field label{display:block;font-size:var(--text-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--space-xs)}
+.form-field input,.form-field select{width:100%;background:transparent;border:1px solid var(--color-line);color:var(--color-text);font-size:var(--text-base);font-weight:300;padding:.75rem 1rem;transition:border-color var(--transition-fast)}
+.form-field input:focus,.form-field select:focus{border-color:var(--color-champagne);outline:none}
+.form-field input::placeholder{color:rgba(163,154,136,.5)}
+.form-field input[aria-invalid="true"]{border-color:var(--color-error)}
+.form-field select option{background:var(--color-bg-alt)}
+.field-error{color:var(--color-error);font-size:var(--text-xs);min-height:1.2em;display:block;margin-top:2px}
+.btn{padding:.9rem 2rem;letter-spacing:.28em}
+
+.pay-options{display:flex;flex-direction:column;gap:var(--space-sm)}
+.pay-option{border:1px solid var(--color-line-soft);padding:var(--space-md) var(--space-lg);display:flex;gap:var(--space-md);align-items:flex-start;cursor:pointer;transition:border-color var(--transition-fast)}
+.pay-option:hover{border-color:var(--color-line)}
+.pay-option:has(input:checked){border-color:var(--color-champagne)}
+.pay-option input{margin-top:6px;accent-color:var(--color-champagne)}
+.pay-option__body{flex:1}
+.pay-option__title{display:flex;justify-content:space-between;gap:var(--space-md);font-size:var(--text-base)}
+.pay-option__badge{font-size:var(--text-xs);color:var(--color-success);letter-spacing:.1em}
+.pay-option__desc{font-size:var(--text-sm);color:var(--color-text-muted)}
+.installments-field{margin-top:var(--space-sm);display:none}
+.pay-option:has(input:checked) .installments-field.is-available{display:block}
+
+.summary-items{display:flex;flex-direction:column;gap:var(--space-sm);max-height:260px;overflow:auto;padding-right:var(--space-xs)}
+.summary-item{display:flex;justify-content:space-between;gap:var(--space-md);font-size:var(--text-sm)}
+.summary-item span:first-child{color:var(--color-text-muted)}
+.summary-discount{color:var(--color-success)}
+.mp-badge{display:flex;align-items:center;gap:var(--space-sm);font-size:var(--text-xs);color:var(--color-text-muted);border-top:1px solid var(--color-line-soft);padding-top:var(--space-md)}
+
+.confirmation{display:none;text-align:center;padding-block:var(--space-3xl);border:1px solid var(--color-line);margin-block:var(--space-2xl)}
+.confirmation.is-visible{display:block}
+.confirmation__monogram{font-family:var(--font-display);font-size:2rem;color:var(--color-champagne);letter-spacing:.3em;margin-bottom:var(--space-md)}
+.confirmation h2{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:500}
+.confirmation p{color:var(--color-text-muted);max-width:52ch;margin:var(--space-md) auto 0;padding-inline:var(--space-lg)}
+.confirmation strong{color:var(--color-champagne-light);font-weight:400}
+
+@media (min-width:640px){
+  .field-row--2{grid-template-columns:1fr 1fr}
+  .field-row--3{grid-template-columns:2fr 1fr 1fr}
+}
+@media (min-width:900px){
+  .checkout-layout{grid-template-columns:1.6fr 1fr;align-items:start}
+  .summary{position:sticky;top:var(--space-lg)}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container" aria-label="Navegação do checkout">
+    <a href="elegant-vision-home.html" class="brand" aria-label="ELEGANT VISION — início">
+      <span class="brand__monogram" aria-hidden="true">EV</span>
+      <span class="brand__name">Elegant <span>Vision</span></span>
+    </a>
+    <span class="secure-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="10" width="16" height="11"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      Compra segura
+    </span>
+  </nav>
+  <div class="steps-bar" aria-label="Etapas do checkout">
+    <span data-step="1" id="stepBar1" class="is-active">Identificação</span>
+    <span data-step="2" id="stepBar2">Entrega</span>
+    <span data-step="3" id="stepBar3">Pagamento</span>
+  </div>
+</header>
+
+<main class="container">
+  <div class="checkout-layout" id="checkoutLayout">
+    <div class="checkout-steps">
+
+      <section class="step is-open" id="step1">
+        <button class="step__head" type="button" data-step="1">
+          <span class="step__title"><span class="step__number">01</span> Identificação</span>
+          <span class="step__status" id="status1"></span>
+        </button>
+        <div class="step__body">
+          <div class="form-field">
+            <label for="fullName">Nome completo</label>
+            <input type="text" id="fullName" autocomplete="name" required>
+            <span class="field-error" id="err-fullName"></span>
+          </div>
+          <div class="field-row field-row--2">
+            <div class="form-field">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" autocomplete="email" required>
+              <span class="field-error" id="err-email"></span>
+            </div>
+            <div class="form-field">
+              <label for="phone">Celular / WhatsApp</label>
+              <input type="tel" id="phone" inputmode="numeric" placeholder="(61) 90000-0000" autocomplete="tel" required>
+              <span class="field-error" id="err-phone"></span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="cpf">CPF</label>
+            <input type="text" id="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required>
+            <span class="field-error" id="err-cpf"></span>
+          </div>
+          <button class="btn btn--primary" type="button" id="toStep2">Continuar para entrega</button>
+        </div>
+      </section>
+
+      <section class="step" id="step2">
+        <button class="step__head" type="button" data-step="2">
+          <span class="step__title"><span class="step__number">02</span> Entrega</span>
+          <span class="step__status" id="status2"></span>
+        </button>
+        <div class="step__body">
+          <div class="field-row field-row--2">
+            <div class="form-field">
+              <label for="cep">CEP</label>
+              <input type="text" id="cep" inputmode="numeric" placeholder="00000-000" maxlength="9" autocomplete="postal-code" required>
+              <span class="field-error" id="err-cep"></span>
+            </div>
+            <div class="form-field">
+              <label for="city">Cidade / UF</label>
+              <input type="text" id="city" autocomplete="address-level2" required>
+              <span class="field-error" id="err-city"></span>
+            </div>
+          </div>
+          <div class="field-row field-row--3">
+            <div class="form-field">
+              <label for="street">Endereço</label>
+              <input type="text" id="street" autocomplete="address-line1" required>
+              <span class="field-error" id="err-street"></span>
+            </div>
+            <div class="form-field">
+              <label for="number">Número</label>
+              <input type="text" id="number" required>
+              <span class="field-error" id="err-number"></span>
+            </div>
+            <div class="form-field">
+              <label for="complement">Complemento</label>
+              <input type="text" id="complement" placeholder="Opcional">
+              <span class="field-error"></span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="district">Bairro</label>
+            <input type="text" id="district" autocomplete="address-level3" required>
+            <span class="field-error" id="err-district"></span>
+          </div>
+          <button class="btn btn--primary" type="button" id="toStep3">Continuar para pagamento</button>
+        </div>
+      </section>
+
+      <section class="step" id="step3">
+        <button class="step__head" type="button" data-step="3">
+          <span class="step__title"><span class="step__number">03</span> Pagamento</span>
+          <span class="step__status" id="status3"></span>
+        </button>
+        <div class="step__body">
+          <div class="pay-options" role="radiogroup" aria-label="Forma de pagamento">
+            <label class="pay-option">
+              <input type="radio" name="payment" value="pix" checked>
+              <span class="pay-option__body">
+                <span class="pay-option__title">Pix <span class="pay-option__badge">5% de desconto</span></span>
+                <span class="pay-option__desc">Aprovação em segundos. Código válido por 30 minutos.</span>
+              </span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="payment" value="card">
+              <span class="pay-option__body">
+                <span class="pay-option__title">Cartão de crédito</span>
+                <span class="pay-option__desc">Em até 6x sem juros. Dados processados pelo Mercado Pago.</span>
+                <span class="installments-field is-available form-field">
+                  <label for="installments">Parcelas</label>
+                  <select id="installments"></select>
+                </span>
+              </span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="payment" value="boleto">
+              <span class="pay-option__body">
+                <span class="pay-option__title">Boleto bancário</span>
+                <span class="pay-option__desc">Compensação em até 2 dias úteis. Pedido reservado por 3 dias.</span>
+              </span>
+            </label>
+          </div>
+          <button class="btn btn--primary" type="button" id="finishBtn">Finalizar pedido</button>
+        </div>
+      </section>
+    </div>
+
+    <aside class="summary" aria-labelledby="summaryTitle">
+      <h2 id="summaryTitle">Seu pedido</h2>
+      <div class="summary-items" id="summaryItems"></div>
+      <div class="summary-row"><span>Subtotal</span><strong id="subtotalValue"></strong></div>
+      <div class="summary-row"><span>Frete</span><strong id="freteValue"></strong></div>
+      <div class="summary-row summary-discount" id="discountRow" hidden><span>Desconto Pix (5%)</span><strong id="discountValue"></strong></div>
+      <div class="summary-row summary-row--total"><span>Total</span><strong id="totalValue"></strong></div>
+      <div class="mp-badge">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="10" width="16" height="11"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        Pagamento processado pelo Mercado Pago
+      </div>
+    </aside>
+  </div>
+
+  <section class="confirmation" id="confirmation" aria-live="polite">
+    <p class="confirmation__monogram">E · V</p>
+    <h2>Pedido recebido</h2>
+    <p id="confirmationText"></p>
+    <p style="margin-top:1rem;font-size:.85rem">Neste protótipo o redirecionamento ao Mercado Pago é simulado — na produção, este botão chama seu backend, que cria a preferência de pagamento e devolve o link seguro do checkout.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-legal">
+    <span>© 2026 ELEGANT VISION · Todos os direitos reservados</span>
+    <span>CNPJ 00.000.000/0001-00</span>
+  </div>
+</footer>
+
+<script>
+const BRL=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const PIX_DISCOUNT=.05;
+
+let checkoutData={cart:[],frete:null,subtotal:0};
+try{
+  const saved=sessionStorage.getItem('ev_checkout');
+  if(saved)checkoutData=JSON.parse(saved);
+  if(!checkoutData.cart.length){
+    const cart=JSON.parse(localStorage.getItem('ev_cart'))||[];
+    checkoutData={cart,frete:null,subtotal:cart.reduce((s,i)=>s+i.price*i.qty,0)};
+  }
+}catch{}
+
+if(!checkoutData.cart.length){
+  location.replace('elegant-vision-sacola.html');
+}
+
+const summaryItems=document.getElementById('summaryItems');
+summaryItems.innerHTML=checkoutData.cart.map(i=>`
+  <div class="summary-item">
+    <span>${i.name} · ${i.color} · ${i.size} × ${i.qty}</span>
+    <span>${BRL(i.price*i.qty)}</span>
+  </div>`).join('');
+
+const freteVal=checkoutData.frete===0?0:(checkoutData.frete||24.9);
+function updateTotals(){
+  const method=document.querySelector('input[name="payment"]:checked').value;
+  const base=checkoutData.subtotal+freteVal;
+  const discount=method==='pix'?checkoutData.subtotal*PIX_DISCOUNT:0;
+  document.getElementById('subtotalValue').textContent=BRL(checkoutData.subtotal);
+  document.getElementById('freteValue').textContent=freteVal===0?'Grátis':BRL(freteVal);
+  document.getElementById('discountRow').hidden=discount===0;
+  document.getElementById('discountValue').textContent='−'+BRL(discount);
+  document.getElementById('totalValue').textContent=BRL(base-discount);
+  const sel=document.getElementById('installments');
+  sel.innerHTML=Array.from({length:6},(_,n)=>`<option value="${n+1}">${n+1}x de ${BRL(base/(n+1))} sem juros</option>`).join('');
+}
+document.querySelectorAll('input[name="payment"]').forEach(r=>r.addEventListener('change',updateTotals));
+updateTotals();
+
+const masks={
+  phone(el){let v=el.value.replace(/\D/g,'').slice(0,11);el.value=v.length>6?`(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`:v.length>2?`(${v.slice(0,2)}) ${v.slice(2)}`:v},
+  cpf(el){let v=el.value.replace(/\D/g,'').slice(0,11);el.value=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2')},
+  cep(el){let v=el.value.replace(/\D/g,'').slice(0,8);el.value=v.length>5?`${v.slice(0,5)}-${v.slice(5)}`:v}
+};
+document.getElementById('phone').addEventListener('input',e=>masks.phone(e.target));
+document.getElementById('cpf').addEventListener('input',e=>masks.cpf(e.target));
+document.getElementById('cep').addEventListener('input',e=>masks.cep(e.target));
+
+function validateCPF(cpf){
+  cpf=cpf.replace(/\D/g,'');
+  if(cpf.length!==11||/^(\d)\1{10}$/.test(cpf))return false;
+  for(const t of[9,10]){
+    let sum=0;
+    for(let i=0;i<t;i++)sum+=Number(cpf[i])*(t+1-i);
+    const digit=(sum*10)%11%10;
+    if(digit!==Number(cpf[t]))return false;
+  }
+  return true;
+}
+
+document.getElementById('cep').addEventListener('blur',async e=>{
+  const digits=e.target.value.replace(/\D/g,'');
+  if(digits.length!==8)return;
+  try{
+    const res=await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+    const data=await res.json();
+    if(!data.erro){
+      document.getElementById('street').value=data.logradouro||'';
+      document.getElementById('district').value=data.bairro||'';
+      document.getElementById('city').value=data.localidade?`${data.localidade} / ${data.uf}`:'';
+      document.getElementById('number').focus();
+    }
+  }catch{}
+});
+
+function setError(id,msg){
+  const el=document.getElementById(id);
+  const err=document.getElementById('err-'+id);
+  if(err)err.textContent=msg||'';
+  el.setAttribute('aria-invalid',msg?'true':'false');
+  return !msg;
+}
+function required(id,label){
+  return setError(id,document.getElementById(id).value.trim()?'':'Informe '+label+'.');
+}
+
+const steps={1:document.getElementById('step1'),2:document.getElementById('step2'),3:document.getElementById('step3')};
+const bars={1:document.getElementById('stepBar1'),2:document.getElementById('stepBar2'),3:document.getElementById('stepBar3')};
+let maxStep=1;
+function openStep(n){
+  Object.values(steps).forEach(s=>s.classList.remove('is-open'));
+  steps[n].classList.add('is-open');
+  Object.entries(bars).forEach(([k,el])=>{
+    el.classList.toggle('is-active',Number(k)===n);
+    el.classList.toggle('is-done',Number(k)<n);
+  });
+  steps[n].scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.querySelectorAll('.step__head').forEach(head=>{
+  head.addEventListener('click',()=>{
+    const n=Number(head.dataset.step);
+    if(n<=maxStep)openStep(n);
+  });
+});
+
+document.getElementById('toStep2').addEventListener('click',()=>{
+  let ok=required('fullName','seu nome completo');
+  const email=document.getElementById('email');
+  ok=setError('email',email.validity.valid&&email.value?'':'Informe um e-mail válido.')&&ok;
+  ok=setError('phone',document.getElementById('phone').value.replace(/\D/g,'').length>=10?'':'Informe um celular válido.')&&ok;
+  ok=setError('cpf',validateCPF(document.getElementById('cpf').value)?'':'CPF inválido. Confira os dígitos.')&&ok;
+  if(!ok)return;
+  document.getElementById('status1').textContent='Concluído';
+  document.getElementById('status1').classList.add('is-done');
+  maxStep=Math.max(maxStep,2);
+  openStep(2);
+});
+
+document.getElementById('toStep3').addEventListener('click',()=>{
+  let ok=setError('cep',document.getElementById('cep').value.replace(/\D/g,'').length===8?'':'Informe um CEP válido.');
+  ok=required('street','o endereço')&&ok;
+  ok=required('number','o número')&&ok;
+  ok=required('district','o bairro')&&ok;
+  ok=required('city','a cidade')&&ok;
+  if(!ok)return;
+  document.getElementById('status2').textContent='Concluído';
+  document.getElementById('status2').classList.add('is-done');
+  maxStep=Math.max(maxStep,3);
+  openStep(3);
+});
+
+document.getElementById('finishBtn').addEventListener('click',async()=>{
+  const btn=document.getElementById('finishBtn');
+  btn.disabled=true;
+  btn.textContent='Processando…';
+  const method=document.querySelector('input[name="payment"]:checked').value;
+
+  /* ===== INTEGRAÇÃO MERCADO PAGO (produção) =====
+     Substitua a simulação abaixo por:
+
+     const res = await fetch('https://sua-api.com/api/checkout', {
+       method:'POST',
+       headers:{'Content-Type':'application/json'},
+       body: JSON.stringify({
+         items: checkoutData.cart,
+         customer: { name, email, cpf, phone },
+         shipping: { cep, street, number, district, city, price: freteVal },
+         paymentMethod: method
+       })
+     });
+     const { init_point } = await res.json();
+     location.href = init_point;   // redireciona ao Checkout Pro
+
+     O ACCESS_TOKEN do Mercado Pago fica APENAS no backend.
+  ================================================ */
+
+  await new Promise(r=>setTimeout(r,1200));
+  const order='EV'+Date.now().toString().slice(-8);
+  const labels={pix:'Pix',card:'cartão de crédito',boleto:'boleto bancário'};
+  document.getElementById('checkoutLayout').style.display='none';
+  document.querySelector('.steps-bar').style.display='none';
+  const conf=document.getElementById('confirmation');
+  document.getElementById('confirmationText').innerHTML=
+    `Pedido <strong>${order}</strong> registrado com pagamento via <strong>${labels[method]}</strong>. Você receberá a confirmação por e-mail assim que o Mercado Pago aprovar o pagamento.`;
+  conf.classList.add('is-visible');
+  try{localStorage.removeItem('ev_cart');sessionStorage.removeItem('ev_checkout')}catch{}
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sacola · ELEGANT VISION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="elegant-vision.css">
+<style>
+.header-link{font-size:var(--text-xs);letter-spacing:.24em;text-transform:uppercase;color:var(--color-text-muted);border-bottom:1px solid transparent;transition:color var(--transition-fast),border-color var(--transition-fast)}
+.header-link:hover{color:var(--color-champagne-light);border-color:var(--color-champagne)}
+
+.page-head{padding-block:var(--space-2xl) var(--space-lg)}
+.page-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:500;line-height:1.15;margin-top:var(--space-sm)}
+.page-title em{font-style:italic;color:var(--color-champagne-light)}
+
+.cart-layout{display:grid;gap:var(--space-2xl);grid-template-columns:1fr;padding-bottom:var(--space-3xl)}
+.cart-items{display:flex;flex-direction:column}
+.cart-item{display:grid;grid-template-columns:88px 1fr;gap:var(--space-md);padding-block:var(--space-lg);border-top:1px solid var(--color-line-soft)}
+.cart-item:last-child{border-bottom:1px solid var(--color-line-soft)}
+.cart-item__photo{aspect-ratio:3/4;border:1px solid var(--color-line-soft)}
+.cart-item__body{display:flex;flex-direction:column;gap:var(--space-sm)}
+.cart-item__top{display:flex;justify-content:space-between;gap:var(--space-md);align-items:flex-start}
+.cart-item__name{font-family:var(--font-display);font-size:var(--text-lg);font-weight:500;line-height:1.2}
+.cart-item__variant{font-size:var(--text-xs);letter-spacing:.16em;text-transform:uppercase;color:var(--color-text-muted)}
+.cart-item__remove{background:none;border:none;color:var(--color-text-muted);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid transparent;transition:color var(--transition-fast)}
+.cart-item__remove:hover{color:var(--color-error);border-color:var(--color-error)}
+.cart-item__bottom{display:flex;justify-content:space-between;align-items:center;gap:var(--space-md);margin-top:auto}
+.qty-stepper{display:flex;align-items:center;border:1px solid var(--color-line)}
+.qty-stepper button{background:none;border:none;color:var(--color-champagne);width:34px;height:34px;font-size:1rem;cursor:pointer;transition:background var(--transition-fast)}
+.qty-stepper button:hover{background:rgba(214,188,138,.08)}
+.qty-stepper output{min-width:34px;text-align:center;font-size:var(--text-sm)}
+.cart-item__price{color:var(--color-champagne-light);font-weight:400}
+.cart-empty{text-align:center;padding-block:var(--space-3xl);border-block:1px solid var(--color-line-soft)}
+.cart-empty p{font-family:var(--font-display);font-style:italic;font-size:var(--text-lg);color:var(--color-text-muted);margin-bottom:var(--space-lg)}
+
+.summary-pix{font-size:var(--text-sm);color:var(--color-success)}
+.cep-row{display:flex;gap:var(--space-sm)}
+.cep-row input{flex:1;min-width:0;background:transparent;border:1px solid var(--color-line);color:var(--color-text);font-family:var(--font-body);font-size:var(--text-sm);font-weight:300;padding:.6rem .9rem}
+.cep-row input:focus{border-color:var(--color-champagne);outline:none}
+.cep-row input::placeholder{color:rgba(163,154,136,.5)}
+.btn--ghost{padding:.6rem 1.2rem}
+.shipping-hint{font-size:var(--text-xs);color:var(--color-text-muted)}
+.shipping-error{color:var(--color-error);font-size:var(--text-sm);min-height:1.3em}
+.free-shipping-bar{font-size:var(--text-xs);color:var(--color-text-muted)}
+.free-shipping-bar .bar{height:3px;background:var(--color-line-soft);margin-top:var(--space-sm)}
+.free-shipping-bar .bar>span{display:block;height:100%;background:var(--color-champagne);transition:width var(--transition-base)}
+
+@media (min-width:900px){
+  .cart-layout{grid-template-columns:1.5fr 1fr;align-items:start}
+  .cart-item{grid-template-columns:110px 1fr}
+  .summary{position:sticky;top:96px}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container" aria-label="Navegação principal">
+    <a href="elegant-vision-home.html" class="brand" aria-label="ELEGANT VISION — início">
+      <span class="brand__monogram" aria-hidden="true">EV</span>
+      <span class="brand__name">Elegant <span>Vision</span></span>
+    </a>
+    <a href="elegant-vision-catalogo.html" class="header-link">Continuar comprando</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <p class="eyebrow">Sua seleção</p>
+    <h1 class="page-title">Sacola <em>de compras</em></h1>
+  </div>
+
+  <div class="cart-layout">
+    <section class="cart-items" id="cartItems" aria-label="Itens da sacola" aria-live="polite"></section>
+
+    <aside class="summary" aria-labelledby="summaryTitle">
+      <h2 id="summaryTitle">Resumo do pedido</h2>
+
+      <div class="free-shipping-bar" id="freeShippingBar">
+        <span id="freeShippingText"></span>
+        <div class="bar"><span id="freeShippingFill" style="width:0%"></span></div>
+      </div>
+
+      <div>
+        <div class="cep-row">
+          <label for="cepInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">CEP de entrega</label>
+          <input type="text" id="cepInput" inputmode="numeric" placeholder="CEP: 00000-000" maxlength="9" autocomplete="postal-code">
+          <button class="btn btn--ghost" type="button" id="cepBtn">Calcular</button>
+        </div>
+        <p class="shipping-error" id="cepError" role="alert" aria-live="polite"></p>
+      </div>
+
+      <div class="summary-row"><span>Subtotal</span><strong id="subtotalValue">R$ 0,00</strong></div>
+      <div class="summary-row"><span>Frete (PAC)</span><strong id="freteValue">—</strong></div>
+      <div class="summary-row summary-row--total"><span>Total</span><strong id="totalValue">R$ 0,00</strong></div>
+      <p class="summary-pix" id="pixValue"></p>
+
+      <a class="btn btn--primary" id="checkoutBtn" href="elegant-vision-checkout.html">Finalizar compra</a>
+      <p class="shipping-hint">Pagamento processado com segurança pelo Mercado Pago · Pix, cartão em até 6x ou boleto</p>
+    </aside>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-legal">
+    <span>© 2026 ELEGANT VISION · Todos os direitos reservados</span>
+    <span>CNPJ 00.000.000/0001-00</span>
+  </div>
+</footer>
+
+<script src="elegant-vision-products.js"></script>
+<script>
+const BRL=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const PIX_DISCOUNT=.05;
+const FREE_SHIPPING_MIN=399;
+const CART_KEY='ev_cart';
+
+const storage={
+  get(){try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{return[]}},
+  set(cart){try{localStorage.setItem(CART_KEY,JSON.stringify(cart))}catch{}}
+};
+let cart=storage.get();
+let frete=null;
+
+const itemsEl=document.getElementById('cartItems');
+function subtotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
+
+function render(){
+  if(!cart.length){
+    itemsEl.innerHTML=`<div class="cart-empty">
+      <p>Sua sacola está vazia.</p>
+      <a class="btn btn--primary" href="elegant-vision-catalogo.html">Explorar o catálogo</a>
+    </div>`;
+    document.getElementById('checkoutBtn').style.display='none';
+  }else{
+    document.getElementById('checkoutBtn').style.display='';
+    itemsEl.innerHTML=cart.map((item,idx)=>`
+      <article class="cart-item">
+        <div class="cart-item__photo" style="background:${item.ph||'var(--color-surface)'}"></div>
+        <div class="cart-item__body">
+          <div class="cart-item__top">
+            <div>
+              <h2 class="cart-item__name">${item.name}</h2>
+              <p class="cart-item__variant">${item.color} · Tam. ${item.size}</p>
+            </div>
+            <button class="cart-item__remove" type="button" data-action="remove" data-idx="${idx}">Remover</button>
+          </div>
+          <div class="cart-item__bottom">
+            <div class="qty-stepper" aria-label="Quantidade de ${item.name}">
+              <button type="button" data-action="minus" data-idx="${idx}" aria-label="Diminuir quantidade">−</button>
+              <output aria-live="polite">${item.qty}</output>
+              <button type="button" data-action="plus" data-idx="${idx}" aria-label="Aumentar quantidade">+</button>
+            </div>
+            <span class="cart-item__price">${BRL(item.price*item.qty)}</span>
+          </div>
+        </div>
+      </article>`).join('');
+  }
+  const sub=subtotal();
+  document.getElementById('subtotalValue').textContent=BRL(sub);
+  const freeShip=sub>=FREE_SHIPPING_MIN;
+  const freteFinal=frete===null?null:(freeShip?0:frete);
+  document.getElementById('freteValue').textContent=frete===null?'—':(freeShip?'Grátis':BRL(frete));
+  const total=sub+(freteFinal||0);
+  document.getElementById('totalValue').textContent=BRL(total);
+  document.getElementById('pixValue').textContent=cart.length?`${BRL(total-sub*PIX_DISCOUNT)} pagando no Pix (5% off nas peças)`:'';
+  const missing=FREE_SHIPPING_MIN-sub;
+  document.getElementById('freeShippingText').textContent=cart.length?(freeShip?'Você ganhou frete grátis ✓':`Faltam ${BRL(missing)} para frete grátis`):'';
+  document.getElementById('freeShippingFill').style.width=`${Math.min(100,(sub/FREE_SHIPPING_MIN)*100)}%`;
+  try{sessionStorage.setItem('ev_checkout',JSON.stringify({cart,frete:freteFinal,subtotal:sub}))}catch{}
+}
+
+itemsEl.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-action]');
+  if(!btn)return;
+  const idx=Number(btn.dataset.idx);
+  const action=btn.dataset.action;
+  if(action==='remove')cart.splice(idx,1);
+  if(action==='minus'&&cart[idx].qty>1)cart[idx].qty--;
+  if(action==='plus'){
+    const p=window.EV&&EV.byId(cart[idx].id);
+    const max=Math.min(10,(p&&p.stock&&p.stock[cart[idx].size])||10);
+    if(cart[idx].qty<max)cart[idx].qty++;
+  }
+  storage.set(cart);
+  render();
+});
+
+const cepInput=document.getElementById('cepInput');
+cepInput.addEventListener('input',()=>{
+  let v=cepInput.value.replace(/\D/g,'').slice(0,8);
+  cepInput.value=v.length>5?`${v.slice(0,5)}-${v.slice(5)}`:v;
+});
+document.getElementById('cepBtn').addEventListener('click',()=>{
+  const err=document.getElementById('cepError');
+  const digits=cepInput.value.replace(/\D/g,'');
+  err.textContent='';
+  if(digits.length!==8){err.textContent='Informe um CEP válido com 8 dígitos.';return}
+  frete=14.9+Number(digits.slice(0,2))*.35;
+  try{sessionStorage.setItem('ev_cep',cepInput.value)}catch{}
+  render();
+});
+
+try{
+  const savedCep=sessionStorage.getItem('ev_cep');
+  if(savedCep){cepInput.value=savedCep;document.getElementById('cepBtn').click()}
+}catch{}
+render();
+</script>
+</body>
+</html>

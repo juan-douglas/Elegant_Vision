@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Catálogo ELEGANT VISION — vestidos, alfaiataria, saias e blusas com elegância atemporal.">
+<title>Catálogo · ELEGANT VISION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="elegant-vision.css">
+<style>
+:root{--text-2xl:clamp(2rem,1.6rem + 2vw,3rem)}
+
+.page-head{padding-block:var(--space-3xl) var(--space-xl);border-bottom:1px solid var(--color-line-soft)}
+.breadcrumb{list-style:none;display:flex;gap:var(--space-sm);font-size:var(--text-xs);letter-spacing:.16em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--space-lg)}
+.breadcrumb li:not(:last-child)::after{content:"/";margin-left:var(--space-sm);color:var(--color-line)}
+.breadcrumb a:hover{color:var(--color-champagne-light)}
+.breadcrumb [aria-current]{color:var(--color-champagne)}
+.page-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:500;line-height:1.15}
+.page-title em{font-style:italic;color:var(--color-champagne-light)}
+.page-count{color:var(--color-text-muted);font-size:var(--text-sm);margin-top:var(--space-sm)}
+
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-lg);padding-block:var(--space-lg)}
+.filter-chips{display:flex;flex-wrap:wrap;gap:var(--space-sm)}
+.chip{background:transparent;border:1px solid var(--color-line-soft);color:var(--color-text-muted);font-family:var(--font-body);font-size:var(--text-xs);letter-spacing:.2em;text-transform:uppercase;padding:.55rem 1.2rem;cursor:pointer;transition:all var(--transition-fast)}
+.chip:hover{border-color:var(--color-line);color:var(--color-text)}
+.chip[aria-pressed="true"]{background:var(--color-text);border-color:var(--color-text);color:var(--color-bg)}
+.sort-field{display:flex;align-items:center;gap:var(--space-sm)}
+.sort-field label{font-size:var(--text-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--color-text-muted)}
+.sort-field select{background:var(--color-bg-alt);border:1px solid var(--color-line);color:var(--color-text);font-family:var(--font-body);font-size:var(--text-sm);font-weight:300;padding:.55rem .9rem;cursor:pointer}
+.sort-field select:focus{border-color:var(--color-champagne);outline:none}
+
+.product-grid{display:grid;gap:var(--space-xl);grid-template-columns:1fr;padding-block:var(--space-lg) var(--space-3xl)}
+.product-card{display:flex;flex-direction:column;gap:var(--space-md)}
+.product-card__media{position:relative;aspect-ratio:3/4;overflow:hidden;border:1px solid var(--color-line-soft);display:block}
+.product-card__photo{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-display);font-style:italic;color:rgba(28,25,20,.35);font-size:var(--text-sm);transition:transform var(--transition-slow)}
+.product-card__media:hover .product-card__photo{transform:scale(1.04)}
+.product-card__tag{position:absolute;top:var(--space-md);left:var(--space-md);background:rgba(247,244,238,.92);border:1px solid var(--color-line);color:var(--color-champagne-light);font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;padding:.35rem .8rem}
+.product-card__name{font-family:var(--font-display);font-size:var(--text-lg);font-weight:500}
+.product-card__name a:hover{color:var(--color-champagne-light)}
+.product-card__meta{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-md)}
+.product-card__category{font-size:var(--text-xs);letter-spacing:.2em;text-transform:uppercase;color:var(--color-text-muted)}
+.product-card__price{font-size:var(--text-base);color:var(--color-champagne-light);font-weight:400}
+.product-card__installments{font-size:var(--text-xs);color:var(--color-text-muted)}
+.empty-state{grid-column:1/-1;text-align:center;padding-block:var(--space-3xl);color:var(--color-text-muted);font-family:var(--font-display);font-style:italic;font-size:var(--text-lg)}
+
+@media (min-width:640px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1024px){.nav-links{display:flex}.product-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container" aria-label="Navegação principal">
+    <a href="elegant-vision-home.html" class="brand" aria-label="ELEGANT VISION — início">
+      <span class="brand__monogram" aria-hidden="true">EV</span>
+      <span class="brand__name">Elegant <span>Vision</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="elegant-vision-catalogo.html" aria-current="page">Feminino</a></li>
+      <li><a href="elegant-vision-catalogo.html?cat=Homme">Masculino</a></li>
+      <li><a href="elegant-vision-home.html#manifesto">A Maison</a></li>
+      <li><a href="elegant-vision-home.html#newsletter">Contato</a></li>
+    </ul>
+    <button class="cart-button" type="button" aria-label="Sacola de compras, 0 itens">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 7h12l1 14H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="cart-button__count" id="cartCount">0</span>
+    </button>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <nav aria-label="Trilha de navegação">
+      <ol class="breadcrumb">
+        <li><a href="elegant-vision-home.html">Início</a></li>
+        <li aria-current="page">Catálogo</li>
+      </ol>
+    </nav>
+    <p class="eyebrow">Coleção completa</p>
+    <h1 class="page-title">Catálogo <em>Elegant Vision</em></h1>
+    <p class="page-count" id="productCount"></p>
+  </div>
+
+  <div class="toolbar">
+    <div class="filter-chips" role="group" aria-label="Filtrar por categoria" id="filterChips">
+      <button class="chip" type="button" data-filter="todos" aria-pressed="true">Todos</button>
+      <button class="chip" type="button" data-filter="Vestidos" aria-pressed="false">Vestidos</button>
+      <button class="chip" type="button" data-filter="Alfaiataria" aria-pressed="false">Alfaiataria</button>
+      <button class="chip" type="button" data-filter="Saias" aria-pressed="false">Saias</button>
+      <button class="chip" type="button" data-filter="Blusas" aria-pressed="false">Blusas</button>
+      <button class="chip" type="button" data-filter="Homme" aria-pressed="false">Homme</button>
+    </div>
+    <div class="sort-field">
+      <label for="sortSelect">Ordenar</label>
+      <select id="sortSelect">
+        <option value="relevance">Relevância</option>
+        <option value="newest">Lançamentos</option>
+        <option value="priceAsc">Menor preço</option>
+        <option value="priceDesc">Maior preço</option>
+      </select>
+    </div>
+  </div>
+
+  <section class="product-grid" id="productGrid" aria-label="Lista de produtos" aria-live="polite"></section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-legal">
+    <span>© 2026 ELEGANT VISION · Todos os direitos reservados</span>
+    <span>CNPJ 00.000.000/0001-00</span>
+  </div>
+</footer>
+
+<script src="elegant-vision-products.js"></script>
+<script>
+const {PRODUCTS,BRL}=window.EV;
+EV.initHeaderCart();
+const grid=document.getElementById('productGrid');
+const countEl=document.getElementById('productCount');
+const chips=document.getElementById('filterChips');
+const sortSelect=document.getElementById('sortSelect');
+let activeFilter='todos';
+
+function render(){
+  let list=activeFilter==='todos'?[...PRODUCTS]:PRODUCTS.filter(p=>p.category===activeFilter);
+  const sort=sortSelect.value;
+  if(sort==='priceAsc')list.sort((a,b)=>a.price-b.price);
+  if(sort==='priceDesc')list.sort((a,b)=>b.price-a.price);
+  if(sort==='newest')list.sort((a,b)=>Number(b.isNew)-Number(a.isNew));
+  countEl.textContent=`${list.length} ${list.length===1?'peça encontrada':'peças encontradas'}`;
+  if(!list.length){
+    grid.innerHTML='<p class="empty-state">Nenhuma peça encontrada nesta categoria.</p>';
+    return;
+  }
+  grid.innerHTML=list.map(p=>{
+    const totalStock=Object.values(p.stock||{}).reduce((s,q)=>s+q,0);
+    const tag=totalStock===0?'Esgotado':p.tag;
+    return `
+    <article class="product-card">
+      <a class="product-card__media" href="elegant-vision-produto.html?id=${p.id}" aria-label="Ver detalhes de ${p.name}">
+        ${EV.photoHtml(p,'product-card__photo')}
+        ${tag?`<span class="product-card__tag">${tag}</span>`:''}
+      </a>
+      <div class="product-card__info">
+        <h2 class="product-card__name"><a href="elegant-vision-produto.html?id=${p.id}">${p.name}</a></h2>
+        <div class="product-card__meta">
+          <span class="product-card__category">${p.category}</span>
+          <span class="product-card__price">${BRL(p.price)}</span>
+        </div>
+        <span class="product-card__installments">até 6x de ${BRL(p.price/6)} sem juros</span>
+      </div>
+    </article>`}).join('');
+}
+
+chips.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');
+  if(!chip)return;
+  chips.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
+  chip.setAttribute('aria-pressed','true');
+  activeFilter=chip.dataset.filter;
+  render();
+});
+sortSelect.addEventListener('change',render);
+render();
+const catParam=new URLSearchParams(location.search).get('cat');
+if(catParam){
+  const chip=chips.querySelector(`[data-filter="${CSS.escape(catParam)}"]`);
+  if(chip)chip.click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Detalhes da peça — ELEGANT VISION. Elegância atemporal com envio para todo o Brasil.">
+<title>Produto · ELEGANT VISION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="elegant-vision.css">
+<style>
+.breadcrumb{list-style:none;display:flex;flex-wrap:wrap;gap:var(--space-sm);font-size:var(--text-xs);letter-spacing:.16em;text-transform:uppercase;color:var(--color-text-muted);padding-block:var(--space-lg)}
+.breadcrumb li:not(:last-child)::after{content:"/";margin-left:var(--space-sm);color:var(--color-line)}
+.breadcrumb a:hover{color:var(--color-champagne-light)}
+.breadcrumb [aria-current]{color:var(--color-champagne)}
+
+.pdp-layout{display:grid;gap:var(--space-2xl);grid-template-columns:1fr;padding-bottom:var(--space-3xl)}
+.pdp-gallery{display:flex;flex-direction:column;gap:var(--space-md)}
+.pdp-gallery__main{aspect-ratio:3/4;border:1px solid var(--color-line-soft);display:grid;place-items:center;font-family:var(--font-display);font-style:italic;color:rgba(28,25,20,.35);transition:background var(--transition-base)}
+.pdp-gallery__thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-sm)}
+.pdp-thumb{aspect-ratio:1;border:1px solid var(--color-line-soft);background:none;cursor:pointer;transition:border-color var(--transition-fast);padding:0}
+.pdp-thumb>span{display:block;width:100%;height:100%}
+.pdp-thumb[aria-pressed="true"]{border-color:var(--color-champagne)}
+.pdp-thumb:hover{border-color:var(--color-line)}
+
+.pdp-info{display:flex;flex-direction:column;gap:var(--space-lg)}
+.pdp-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:500;line-height:1.15;margin-top:var(--space-sm)}
+.pdp-pricing{display:flex;flex-direction:column;gap:var(--space-xs);padding-block:var(--space-md);border-block:1px solid var(--color-line-soft)}
+.pdp-price{font-size:var(--text-xl);color:var(--color-champagne-light);font-weight:400}
+.pdp-installments{font-size:var(--text-sm);color:var(--color-text-muted)}
+.pdp-pix{font-size:var(--text-sm);color:var(--color-success)}
+
+.option-group{display:flex;flex-direction:column;gap:var(--space-sm)}
+.option-group__label{font-size:var(--text-xs);letter-spacing:.24em;text-transform:uppercase;color:var(--color-text-muted);display:flex;justify-content:space-between;align-items:baseline}
+.option-group__value{color:var(--color-champagne-light);letter-spacing:.08em;text-transform:none}
+.swatch-row{display:flex;gap:var(--space-sm)}
+.swatch{width:38px;height:38px;border-radius:999px;border:1px solid var(--color-line);cursor:pointer;padding:3px;background:transparent;transition:border-color var(--transition-fast)}
+.swatch>span{display:block;width:100%;height:100%;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(28,25,20,.14)}
+.swatch[aria-pressed="true"]{border-color:var(--color-champagne);outline:1px solid var(--color-champagne);outline-offset:2px}
+.size-row{display:flex;flex-wrap:wrap;gap:var(--space-sm)}
+.size-btn{min-width:52px;padding:.6rem .9rem;background:transparent;border:1px solid var(--color-line-soft);color:var(--color-text);font-size:var(--text-sm);letter-spacing:.12em;cursor:pointer;transition:all var(--transition-fast)}
+.size-btn:hover:not(:disabled){border-color:var(--color-line)}
+.size-btn[aria-pressed="true"]{background:var(--color-text);border-color:var(--color-text);color:var(--color-bg)}
+.size-btn:disabled{color:rgba(110,100,85,.45);border-color:rgba(168,133,59,.1);cursor:not-allowed;text-decoration:line-through}
+.size-guide-toggle{background:none;border:none;color:var(--color-champagne);font-size:var(--text-xs);letter-spacing:.18em;text-transform:uppercase;cursor:pointer;border-bottom:1px solid var(--color-line);padding-bottom:2px}
+.size-guide-toggle:hover{color:var(--color-champagne-light)}
+.size-error{color:var(--color-error);font-size:var(--text-sm);min-height:1.4em}
+
+.buy-row{display:flex;gap:var(--space-md);align-items:stretch}
+.qty-stepper{display:flex;align-items:center;border:1px solid var(--color-line)}
+.qty-stepper button{background:none;border:none;color:var(--color-champagne);width:42px;height:100%;min-height:52px;font-size:1.1rem;cursor:pointer;transition:background var(--transition-fast)}
+.qty-stepper button:hover{background:rgba(214,188,138,.08)}
+.qty-stepper output{min-width:40px;text-align:center;font-size:var(--text-base)}
+.btn--primary{flex:1}
+.btn--primary:disabled{opacity:.55}
+
+.shipping-box{border:1px solid var(--color-line-soft);padding:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-md)}
+.shipping-box h2{font-family:var(--font-display);font-size:var(--text-lg);font-weight:500}
+.cep-row{display:flex;gap:var(--space-sm)}
+.cep-row input{flex:1;min-width:0;background:transparent;border:1px solid var(--color-line);color:var(--color-text);font-family:var(--font-body);font-size:var(--text-base);font-weight:300;padding:.7rem 1rem}
+.cep-row input:focus{border-color:var(--color-champagne);outline:none}
+.cep-row input::placeholder{color:rgba(163,154,136,.5)}
+.btn--ghost{padding:.7rem 1.4rem}
+.shipping-results{display:flex;flex-direction:column;gap:var(--space-sm);font-size:var(--text-sm)}
+.shipping-option{display:flex;justify-content:space-between;gap:var(--space-md);padding:.6rem .8rem;border:1px solid var(--color-line-soft)}
+.shipping-option strong{font-weight:400;color:var(--color-champagne-light)}
+.shipping-note{font-size:var(--text-xs);color:var(--color-text-muted)}
+.shipping-error{color:var(--color-error);font-size:var(--text-sm)}
+.cep-link{font-size:var(--text-xs);color:var(--color-text-muted)}
+.cep-link a{color:var(--color-champagne);border-bottom:1px solid var(--color-line)}
+
+.accordion{border-top:1px solid var(--color-line-soft)}
+.accordion details{border-bottom:1px solid var(--color-line-soft)}
+.accordion summary{cursor:pointer;padding:var(--space-md) 0;font-size:var(--text-xs);letter-spacing:.26em;text-transform:uppercase;color:var(--color-text);list-style:none;display:flex;justify-content:space-between;align-items:center}
+.accordion summary::-webkit-details-marker{display:none}
+.accordion summary::after{content:"+";color:var(--color-champagne);font-size:1.1rem;font-weight:300}
+.accordion details[open] summary::after{content:"−"}
+.accordion .accordion__body{padding-bottom:var(--space-lg);color:var(--color-text-muted);font-size:var(--text-sm)}
+.accordion .accordion__body ul{padding-left:1.2rem}
+
+.size-modal{border:1px solid var(--color-line);background:var(--color-bg-alt);color:var(--color-text);padding:0;max-width:min(560px,92vw);width:100%}
+.size-modal::backdrop{background:rgba(28,25,20,.45);backdrop-filter:blur(3px)}
+.size-modal__inner{padding:var(--space-xl)}
+.size-modal__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-lg)}
+.size-modal__head h2{font-family:var(--font-display);font-size:var(--text-xl);font-weight:500}
+.size-modal__close{background:none;border:1px solid var(--color-line);color:var(--color-text);width:36px;height:36px;cursor:pointer;font-size:1rem}
+.size-modal__close:hover{border-color:var(--color-champagne);color:var(--color-champagne)}
+.size-table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+.size-table th,.size-table td{border:1px solid var(--color-line-soft);padding:.6rem .8rem;text-align:left}
+.size-table th{font-weight:400;letter-spacing:.14em;text-transform:uppercase;font-size:var(--text-xs);color:var(--color-champagne)}
+.size-table td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+.size-modal__tip{margin-top:var(--space-md);font-size:var(--text-xs);color:var(--color-text-muted)}
+
+.toast{position:fixed;bottom:var(--space-lg);left:50%;transform:translate(-50%,120%);background:var(--color-surface);border:1px solid var(--color-champagne);color:var(--color-text);padding:var(--space-md) var(--space-xl);font-size:var(--text-sm);z-index:200;transition:transform var(--transition-base);max-width:92vw;text-align:center}
+.toast.is-visible{transform:translate(-50%,0)}
+
+.related-section{padding-block:var(--space-3xl);border-top:1px solid var(--color-line-soft)}
+.related-section h2{font-family:var(--font-display);font-size:var(--text-xl);font-weight:500;margin-top:var(--space-sm);margin-bottom:var(--space-xl)}
+.related-grid{display:grid;gap:var(--space-xl);grid-template-columns:repeat(2,1fr)}
+.related-card__media{aspect-ratio:3/4;border:1px solid var(--color-line-soft);display:grid;place-items:center;font-family:var(--font-display);font-style:italic;color:rgba(28,25,20,.3);font-size:var(--text-xs);margin-bottom:var(--space-sm);transition:transform var(--transition-slow)}
+.related-card:hover .related-card__media{transform:translateY(-4px)}
+.related-card__name{font-family:var(--font-display);font-size:var(--text-base);font-weight:500}
+.related-card__price{font-size:var(--text-sm);color:var(--color-champagne-light)}
+
+@media (min-width:900px){
+  .nav-links{display:flex}
+  .pdp-layout{grid-template-columns:1.1fr 1fr;align-items:start}
+  .pdp-gallery{position:sticky;top:96px}
+  .related-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav-container" aria-label="Navegação principal">
+    <a href="elegant-vision-home.html" class="brand" aria-label="ELEGANT VISION — início">
+      <span class="brand__monogram" aria-hidden="true">EV</span>
+      <span class="brand__name">Elegant <span>Vision</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="elegant-vision-catalogo.html">Feminino</a></li>
+      <li><a href="elegant-vision-catalogo.html?cat=Homme">Masculino</a></li>
+      <li><a href="elegant-vision-home.html#manifesto">A Maison</a></li>
+      <li><a href="elegant-vision-home.html#newsletter">Contato</a></li>
+    </ul>
+    <button class="cart-button" type="button" aria-label="Sacola de compras, 0 itens">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M6 7h12l1 14H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="cart-button__count" id="cartCount">0</span>
+    </button>
+  </nav>
+</header>
+
+<main class="container">
+  <nav aria-label="Trilha de navegação">
+    <ol class="breadcrumb">
+      <li><a href="elegant-vision-home.html">Início</a></li>
+      <li><a href="elegant-vision-catalogo.html">Catálogo</a></li>
+      <li aria-current="page" id="breadcrumbName">Produto</li>
+    </ol>
+  </nav>
+
+  <div class="pdp-layout">
+    <div class="pdp-gallery">
+      <div class="pdp-gallery__main" id="galleryMain">fotografia principal da peça</div>
+      <div class="pdp-gallery__thumbs" role="group" aria-label="Miniaturas da galeria" id="galleryThumbs"></div>
+    </div>
+
+    <div class="pdp-info">
+      <div>
+        <p class="eyebrow" id="pdpCategory">—</p>
+        <h1 class="pdp-title" id="pdpName">Carregando…</h1>
+      </div>
+
+      <div class="pdp-pricing">
+        <span class="pdp-price" id="pdpPrice"></span>
+        <span class="pdp-installments" id="pdpInstallments"></span>
+        <span class="pdp-pix" id="pdpPix"></span>
+      </div>
+
+      <div class="option-group">
+        <span class="option-group__label" id="colorLabel">Cor <span class="option-group__value" id="colorValue">Noir</span></span>
+        <div class="swatch-row" role="group" aria-labelledby="colorLabel" id="swatchRow">
+          <button class="swatch" type="button" aria-pressed="true" data-color="Noir" aria-label="Cor Noir"><span style="background:#141216"></span></button>
+          <button class="swatch" type="button" aria-pressed="false" data-color="Champagne" aria-label="Cor Champagne"><span style="background:#D6BC8A"></span></button>
+          <button class="swatch" type="button" aria-pressed="false" data-color="Off-White" aria-label="Cor Off-White"><span style="background:#EDE8DE"></span></button>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <span class="option-group__label" id="sizeLabel">Tamanho
+          <button class="size-guide-toggle" type="button" id="sizeGuideBtn">Guia de medidas</button>
+        </span>
+        <div class="size-row" role="group" aria-labelledby="sizeLabel" id="sizeRow">
+          <button class="size-btn" type="button" data-size="PP" aria-pressed="false">PP</button>
+          <button class="size-btn" type="button" data-size="P" aria-pressed="false">P</button>
+          <button class="size-btn" type="button" data-size="M" aria-pressed="false">M</button>
+          <button class="size-btn" type="button" data-size="G" aria-pressed="false">G</button>
+          <button class="size-btn" type="button" data-size="GG" aria-pressed="false" disabled aria-label="GG indisponível">GG</button>
+        </div>
+        <p class="size-error" id="sizeError" role="alert" aria-live="polite"></p>
+      </div>
+
+      <div class="buy-row">
+        <div class="qty-stepper" aria-label="Quantidade">
+          <button type="button" id="qtyMinus" aria-label="Diminuir quantidade">−</button>
+          <output id="qtyValue" aria-live="polite">1</output>
+          <button type="button" id="qtyPlus" aria-label="Aumentar quantidade">+</button>
+        </div>
+        <button class="btn btn--primary" type="button" id="addToCart">Adicionar à sacola</button>
+      </div>
+
+      <section class="shipping-box" aria-labelledby="shippingTitle">
+        <h2 id="shippingTitle">Calcular frete e prazo</h2>
+        <div class="cep-row">
+          <label for="cepInput" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">CEP de entrega</label>
+          <input type="text" id="cepInput" inputmode="numeric" placeholder="00000-000" maxlength="9" autocomplete="postal-code">
+          <button class="btn btn--ghost" type="button" id="cepBtn">Calcular</button>
+        </div>
+        <p class="shipping-error" id="cepError" role="alert" aria-live="polite"></p>
+        <div class="shipping-results" id="shippingResults" hidden>
+          <div class="shipping-option"><span>PAC</span><span><strong id="pacPrice"></strong> · <span id="pacDays"></span></span></div>
+          <div class="shipping-option"><span>SEDEX</span><span><strong id="sedexPrice"></strong> · <span id="sedexDays"></span></span></div>
+          <p class="shipping-note">Peça confeccionada sob demanda: prazos já incluem até 5 dias úteis de preparo. Frete grátis acima de R$ 399.</p>
+        </div>
+        <p class="cep-link">Não sabe seu CEP? <a href="https://buscacepinter.correios.com.br" target="_blank" rel="noopener">Consulte nos Correios</a></p>
+      </section>
+
+      <div class="accordion">
+        <details open>
+          <summary>Descrição</summary>
+          <div class="accordion__body" id="pdpDescription"></div>
+        </details>
+        <details>
+          <summary>Composição &amp; cuidados</summary>
+          <div class="accordion__body">
+            <ul>
+              <li>Tecido premium com caimento estruturado</li>
+              <li>Lavar à mão ou ciclo delicado, água fria</li>
+              <li>Não usar alvejante · Secar à sombra</li>
+              <li>Passar em temperatura baixa pelo avesso</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Trocas &amp; devoluções</summary>
+          <div class="accordion__body">
+            Primeira troca gratuita. Direito de arrependimento em até 7 dias corridos após o recebimento (art. 49, CDC), com reembolso integral. Peça deve estar sem uso, com etiquetas.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <section class="related-section" aria-labelledby="relatedTitle">
+    <p class="eyebrow">Complete o look</p>
+    <h2 id="relatedTitle">Você também pode gostar</h2>
+    <div class="related-grid" id="relatedGrid"></div>
+  </section>
+</main>
+
+<dialog class="size-modal" id="sizeModal" aria-labelledby="sizeModalTitle">
+  <div class="size-modal__inner">
+    <div class="size-modal__head">
+      <h2 id="sizeModalTitle">Guia de medidas</h2>
+      <button class="size-modal__close" type="button" id="sizeModalClose" aria-label="Fechar guia de medidas">✕</button>
+    </div>
+    <table class="size-table">
+      <caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Medidas do corpo em centímetros por tamanho</caption>
+      <thead>
+        <tr><th scope="col">Tamanho</th><th scope="col">Busto (cm)</th><th scope="col">Cintura (cm)</th><th scope="col">Quadril (cm)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PP</td><td>82–86</td><td>62–66</td><td>88–92</td></tr>
+        <tr><td>P</td><td>86–90</td><td>66–70</td><td>92–96</td></tr>
+        <tr><td>M</td><td>90–96</td><td>70–76</td><td>96–102</td></tr>
+        <tr><td>G</td><td>96–102</td><td>76–82</td><td>102–108</td></tr>
+        <tr><td>GG</td><td>102–110</td><td>82–90</td><td>108–116</td></tr>
+      </tbody>
+    </table>
+    <p class="size-modal__tip">Meça com fita métrica sobre roupas leves. Em caso de dúvida entre dois tamanhos, recomendamos o maior.</p>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <div class="container footer-legal">
+    <span>© 2026 ELEGANT VISION · Todos os direitos reservados</span>
+    <span>CNPJ 00.000.000/0001-00</span>
+  </div>
+</footer>
+
+<script src="elegant-vision-products.js"></script>
+<script>
+const {PRODUCTS,BRL}=window.EV;
+const PIX_DISCOUNT=.05;
+EV.initHeaderCart();
+
+const params=new URLSearchParams(location.search);
+const product=PRODUCTS.find(p=>p.id===Number(params.get('id')))||PRODUCTS[0];
+
+document.title=`${product.name} · ELEGANT VISION`;
+document.getElementById('breadcrumbName').textContent=product.name;
+document.getElementById('pdpCategory').textContent=product.category;
+document.getElementById('pdpName').textContent=product.name;
+document.getElementById('pdpPrice').textContent=BRL(product.price);
+document.getElementById('pdpInstallments').textContent=`ou até 6x de ${BRL(product.price/6)} sem juros`;
+document.getElementById('pdpPix').textContent=`${BRL(product.price*(1-PIX_DISCOUNT))} no Pix (5% de desconto)`;
+document.getElementById('pdpDescription').textContent=product.desc;
+
+const galleryMain=document.getElementById('galleryMain');
+const thumbs=document.getElementById('galleryThumbs');
+const angles=[160,200,140,185];
+let selectedColor=product.colors?Object.keys(product.colors)[0]:'Noir',selectedSize=null,qty=1;
+
+function loadMainImage(url,altText,phBackground){
+  const test=new Image();
+  test.onload=()=>{
+    galleryMain.style.background='none';
+    galleryMain.innerHTML=`<img src="${url}" alt="${altText}" style="width:100%;height:100%;object-fit:cover">`;
+  };
+  test.onerror=()=>{
+    galleryMain.innerHTML='fotografia principal da peça';
+    galleryMain.style.background=phBackground;
+  };
+  test.src=url;
+}
+function setMainImage(pos){
+  loadMainImage(EV.img(product.id,pos), `${product.name} — imagem ${pos}`, product.ph.replace(/\d+deg/,angles[pos-1]+'deg'));
+}
+function setMainImageForColor(color){
+  const url=product.colors&&product.colors[color];
+  if(!url)return;
+  loadMainImage(url, `${product.name} — ${color}`, product.ph);
+}
+if(product.colors&&product.colors[selectedColor]) setMainImageForColor(selectedColor); else setMainImage(1);
+thumbs.innerHTML=angles.map((a,i)=>`
+  <button class="pdp-thumb" type="button" aria-pressed="${i===0}" aria-label="Ver imagem ${i+1}" data-pos="${i+1}">
+    <span style="position:relative;overflow:hidden">
+      <img src="${EV.img(product.id,i+1)}" alt="" loading="lazy"
+        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"
+        onerror="this.remove()">
+      <span style="position:absolute;inset:0;z-index:-1;background:${product.ph.replace(/\d+deg/,a+'deg')}"></span>
+    </span>
+  </button>`).join('');
+thumbs.addEventListener('click',e=>{
+  const btn=e.target.closest('.pdp-thumb');
+  if(!btn)return;
+  thumbs.querySelectorAll('.pdp-thumb').forEach(t=>t.setAttribute('aria-pressed','false'));
+  btn.setAttribute('aria-pressed','true');
+  setMainImage(Number(btn.dataset.pos));
+});
+
+/* Grade de tamanhos gerada pelo estoque em products.js (0 = esgotado) */
+const sizeRowEl=document.getElementById('sizeRow');
+sizeRowEl.innerHTML=EV.SIZES.map(s=>{
+  const q=(product.stock&&product.stock[s])||0;
+  return `<button class="size-btn" type="button" data-size="${s}" data-stock="${q}"
+    aria-pressed="false" ${q===0?`disabled aria-label="Tamanho ${s} esgotado"`:''}>${s}</button>`;
+}).join('');
+
+const colorValue=document.getElementById('colorValue');
+document.getElementById('swatchRow').addEventListener('click',e=>{
+  const sw=e.target.closest('.swatch');
+  if(!sw)return;
+  document.querySelectorAll('.swatch').forEach(s=>s.setAttribute('aria-pressed','false'));
+  sw.setAttribute('aria-pressed','true');
+  selectedColor=sw.dataset.color;
+  colorValue.textContent=selectedColor;
+  setMainImageForColor(selectedColor);
+});
+
+const sizeError=document.getElementById('sizeError');
+let selectedStock=0;
+sizeRowEl.addEventListener('click',e=>{
+  const btn=e.target.closest('.size-btn');
+  if(!btn||btn.disabled)return;
+  document.querySelectorAll('.size-btn').forEach(b=>b.setAttribute('aria-pressed','false'));
+  btn.setAttribute('aria-pressed','true');
+  selectedSize=btn.dataset.size;
+  selectedStock=Number(btn.dataset.stock);
+  if(qty>selectedStock){qty=selectedStock;qtyValue.textContent=qty}
+  sizeError.style.color=selectedStock<=2?'var(--color-champagne-light)':'';
+  sizeError.textContent=selectedStock<=2?`Últimas ${selectedStock} unidade${selectedStock>1?'s':''} deste tamanho.`:'';
+});
+
+const qtyValue=document.getElementById('qtyValue');
+document.getElementById('qtyMinus').addEventListener('click',()=>{if(qty>1){qty--;qtyValue.textContent=qty}});
+document.getElementById('qtyPlus').addEventListener('click',()=>{
+  const max=selectedStock||10;
+  if(qty<Math.min(10,max)){qty++;qtyValue.textContent=qty}
+});
+
+const toast=document.getElementById('toast');
+let toastTimer;
+function showToast(msg){
+  toast.textContent=msg;
+  toast.classList.add('is-visible');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('is-visible'),2600);
+}
+const cartCount=document.getElementById('cartCount');
+const cartButton=document.querySelector('.cart-button');
+document.getElementById('addToCart').addEventListener('click',()=>{
+  if(!selectedSize){
+    sizeError.style.color='';
+    sizeError.textContent='Selecione um tamanho para continuar.';
+    return;
+  }
+  const total=EV.cart.add({id:product.id,name:product.name,price:product.price,
+    color:selectedColor,size:selectedSize,qty,ph:product.ph});
+  cartCount.textContent=total;
+  cartButton.setAttribute('aria-label',`Sacola de compras, ${total} ${total===1?'item':'itens'}`);
+  showToast(`${product.name} (${selectedColor}, ${selectedSize}) × ${qty} adicionado à sacola`);
+});
+
+const cepInput=document.getElementById('cepInput');
+cepInput.addEventListener('input',()=>{
+  let v=cepInput.value.replace(/\D/g,'').slice(0,8);
+  cepInput.value=v.length>5?`${v.slice(0,5)}-${v.slice(5)}`:v;
+});
+document.getElementById('cepBtn').addEventListener('click',()=>{
+  const cepError=document.getElementById('cepError');
+  const results=document.getElementById('shippingResults');
+  const digits=cepInput.value.replace(/\D/g,'');
+  cepError.textContent='';
+  results.hidden=true;
+  if(digits.length!==8){
+    cepError.textContent='Informe um CEP válido com 8 dígitos.';
+    return;
+  }
+  const seed=Number(digits.slice(0,2));
+  const pac=14.9+seed*.35;
+  const sedex=pac*1.8;
+  const pacDays=5+Math.round(seed/12);
+  document.getElementById('pacPrice').textContent=product.price>=399?'Grátis':BRL(pac);
+  document.getElementById('pacDays').textContent=`${pacDays} a ${pacDays+3} dias úteis`;
+  document.getElementById('sedexPrice').textContent=BRL(sedex);
+  document.getElementById('sedexDays').textContent=`${Math.max(3,pacDays-2)} a ${pacDays} dias úteis`;
+  results.hidden=false;
+});
+
+const sizeModal=document.getElementById('sizeModal');
+document.getElementById('sizeGuideBtn').addEventListener('click',()=>sizeModal.showModal());
+document.getElementById('sizeModalClose').addEventListener('click',()=>sizeModal.close());
+sizeModal.addEventListener('click',e=>{if(e.target===sizeModal)sizeModal.close()});
+
+const related=PRODUCTS.filter(p=>p.id!==product.id&&p.category===product.category);
+const fallback=PRODUCTS.filter(p=>p.id!==product.id&&p.category!==product.category);
+const relatedList=[...related,...fallback].slice(0,4);
+document.getElementById('relatedGrid').innerHTML=relatedList.map(p=>`
+  <a class="related-card" href="elegant-vision-produto.html?id=${p.id}">
+    <div class="related-card__media" style="position:relative;overflow:hidden">
+      ${EV.photoHtml(p,'','fotografia')}
+    </div>
+    <div class="related-card__name">${p.name}</div>
+    <div class="related-card__price">${BRL(p.price)}</div>
+  </a>`).join('');
+</script>
+</body>
+</html>
