@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Finalize sua compra com segurança — ELEGANT VISION. Pagamento via Pix, cartão em até 6x ou boleto, processado pelo Mercado Pago.">
 <title>Checkout · ELEGANT VISION</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%23F7F4EE'/%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20fill='none'%20stroke='%23A8853B'%20stroke-width='2'/%3E%3Ctext%20x='32'%20y='44'%20font-family='Georgia,serif'%20font-size='28'%20font-weight='600'%20fill='%23A8853B'%20text-anchor='middle'%3EEV%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ELEGANT VISION">
+<meta property="og:title" content="Checkout · ELEGANT VISION">
+<meta property="og:description" content="Finalize sua compra com segurança — ELEGANT VISION. Pagamento via Pix, cartão em até 6x ou boleto, processado pelo Mercado Pago.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -265,11 +271,16 @@ if(!checkoutData.cart.length){
 const summaryItems=document.getElementById('summaryItems');
 summaryItems.innerHTML=checkoutData.cart.map(i=>`
   <div class="summary-item">
-    <span>${i.name} · ${i.color} · ${i.size} × ${i.qty}</span>
+    <span>${i.name}${i.color?` · ${i.color}`:''} · ${i.size} × ${i.qty}</span>
     <span>${BRL(i.price*i.qty)}</span>
   </div>`).join('');
 
-const freteVal=checkoutData.frete===0?0:(checkoutData.frete||24.9);
+const FREE_SHIPPING_MIN=399;
+function calcFrete(digits){
+  if(checkoutData.subtotal>=FREE_SHIPPING_MIN)return 0;
+  return 14.9+Number(digits.slice(0,2))*.35;
+}
+let freteVal=checkoutData.frete===0?0:(checkoutData.frete||24.9);
 function updateTotals(){
   const method=document.querySelector('input[name="payment"]:checked').value;
   const base=checkoutData.subtotal+freteVal;
@@ -309,6 +320,8 @@ function validateCPF(cpf){
 document.getElementById('cep').addEventListener('blur',async e=>{
   const digits=e.target.value.replace(/\D/g,'');
   if(digits.length!==8)return;
+  freteVal=calcFrete(digits);
+  updateTotals();
   try{
     const res=await fetch(`https://viacep.com.br/ws/${digits}/json/`);
     const data=await res.json();

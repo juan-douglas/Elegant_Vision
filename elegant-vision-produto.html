@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Detalhes da peça — ELEGANT VISION. Elegância atemporal com envio para todo o Brasil.">
+<meta name="description" id="metaDescription" content="Detalhes da peça — ELEGANT VISION. Elegância atemporal com envio para todo o Brasil.">
 <title>Produto · ELEGANT VISION</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%23F7F4EE'/%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20fill='none'%20stroke='%23A8853B'%20stroke-width='2'/%3E%3Ctext%20x='32'%20y='44'%20font-family='Georgia,serif'%20font-size='28'%20font-weight='600'%20fill='%23A8853B'%20text-anchor='middle'%3EEV%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="ELEGANT VISION">
+<meta property="og:title" id="ogTitle" content="Produto · ELEGANT VISION">
+<meta property="og:description" id="ogDescription" content="Detalhes da peça — ELEGANT VISION. Elegância atemporal com envio para todo o Brasil.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -32,6 +37,7 @@
 .pdp-pix{font-size:var(--text-sm);color:var(--color-success)}
 
 .option-group{display:flex;flex-direction:column;gap:var(--space-sm)}
+.option-group[hidden]{display:none}
 .option-group__label{font-size:var(--text-xs);letter-spacing:.24em;text-transform:uppercase;color:var(--color-text-muted);display:flex;justify-content:space-between;align-items:baseline}
 .option-group__value{color:var(--color-champagne-light);letter-spacing:.08em;text-transform:none}
 .swatch-row{display:flex;gap:var(--space-sm)}
@@ -159,13 +165,9 @@
         <span class="pdp-pix" id="pdpPix"></span>
       </div>
 
-      <div class="option-group">
-        <span class="option-group__label" id="colorLabel">Cor <span class="option-group__value" id="colorValue">Noir</span></span>
-        <div class="swatch-row" role="group" aria-labelledby="colorLabel" id="swatchRow">
-          <button class="swatch" type="button" aria-pressed="true" data-color="Noir" aria-label="Cor Noir"><span style="background:#141216"></span></button>
-          <button class="swatch" type="button" aria-pressed="false" data-color="Champagne" aria-label="Cor Champagne"><span style="background:#D6BC8A"></span></button>
-          <button class="swatch" type="button" aria-pressed="false" data-color="Off-White" aria-label="Cor Off-White"><span style="background:#EDE8DE"></span></button>
-        </div>
+      <div class="option-group" id="colorGroup" hidden>
+        <span class="option-group__label" id="colorLabel">Cor <span class="option-group__value" id="colorValue"></span></span>
+        <div class="swatch-row" role="group" aria-labelledby="colorLabel" id="swatchRow"></div>
       </div>
 
       <div class="option-group">
@@ -282,6 +284,9 @@ const params=new URLSearchParams(location.search);
 const product=PRODUCTS.find(p=>p.id===Number(params.get('id')))||PRODUCTS[0];
 
 document.title=`${product.name} · ELEGANT VISION`;
+document.getElementById('metaDescription').setAttribute('content',`${product.desc} — ELEGANT VISION.`);
+document.getElementById('ogTitle').setAttribute('content',`${product.name} · ELEGANT VISION`);
+document.getElementById('ogDescription').setAttribute('content',`${product.desc} — ELEGANT VISION.`);
 document.getElementById('breadcrumbName').textContent=product.name;
 document.getElementById('pdpCategory').textContent=product.category;
 document.getElementById('pdpName').textContent=product.name;
@@ -293,7 +298,7 @@ document.getElementById('pdpDescription').textContent=product.desc;
 const galleryMain=document.getElementById('galleryMain');
 const thumbs=document.getElementById('galleryThumbs');
 const angles=[160,200,140,185];
-let selectedColor=product.colors?Object.keys(product.colors)[0]:'Noir',selectedSize=null,qty=1;
+let selectedColor=product.colors?Object.keys(product.colors)[0]:null,selectedSize=null,qty=1;
 
 function loadMainImage(url,altText,phBackground){
   const test=new Image();
@@ -342,6 +347,13 @@ sizeRowEl.innerHTML=EV.SIZES.map(s=>{
 }).join('');
 
 const colorValue=document.getElementById('colorValue');
+if(product.colors){
+  const names=Object.keys(product.colors);
+  document.getElementById('colorGroup').hidden=false;
+  document.getElementById('swatchRow').innerHTML=names.map((name,i)=>`
+    <button class="swatch" type="button" aria-pressed="${i===0}" data-color="${name}" aria-label="Cor ${name}"><span style="background:${EV.swatchColor(name)}"></span></button>`).join('');
+  colorValue.textContent=selectedColor;
+}
 document.getElementById('swatchRow').addEventListener('click',e=>{
   const sw=e.target.closest('.swatch');
   if(!sw)return;
@@ -393,7 +405,8 @@ document.getElementById('addToCart').addEventListener('click',()=>{
     color:selectedColor,size:selectedSize,qty,ph:product.ph});
   cartCount.textContent=total;
   cartButton.setAttribute('aria-label',`Sacola de compras, ${total} ${total===1?'item':'itens'}`);
-  showToast(`${product.name} (${selectedColor}, ${selectedSize}) × ${qty} adicionado à sacola`);
+  const variantLabel=selectedColor?`${selectedColor}, ${selectedSize}`:selectedSize;
+  showToast(`${product.name} (${variantLabel}) × ${qty} adicionado à sacola`);
 });
 
 const cepInput=document.getElementById('cepInput');

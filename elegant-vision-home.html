@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="ELEGANT VISION — Moda feminina e masculina com elegância atemporal. Coleções exclusivas, envio para todo o Brasil.">
 <title>ELEGANT VISION · Elegância Atemporal</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%23F7F4EE'/%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20fill='none'%20stroke='%23A8853B'%20stroke-width='2'/%3E%3Ctext%20x='32'%20y='44'%20font-family='Georgia,serif'%20font-size='28'%20font-weight='600'%20fill='%23A8853B'%20text-anchor='middle'%3EEV%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ELEGANT VISION">
+<meta property="og:title" content="ELEGANT VISION · Elegância Atemporal">
+<meta property="og:description" content="ELEGANT VISION — Moda feminina e masculina com elegância atemporal. Coleções exclusivas, envio para todo o Brasil.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -230,6 +235,7 @@
 .cat-f1{background:linear-gradient(165deg,#EDE3D0,#F7F4EE 70%)}
 .cat-f2{background:linear-gradient(195deg,#E9E1CF,#F7F4EE 70%)}
 .cat-f3{background:linear-gradient(150deg,#F0E9DB,#F7F4EE 70%)}
+.cat-f4{background:linear-gradient(160deg,#EEE6D4,#F7F4EE 70%)}
 .cat-m{background:linear-gradient(175deg,#E7E4DC,#F7F4EE 70%)}
 
 /* ===== Masculino strip ===== */
@@ -428,25 +434,31 @@
       <a href="elegant-vision-catalogo.html?cat=Vestidos" class="category-card category-card--wide cat-f1 reveal">
         <span class="category-card__label">
           <span class="category-card__name">Vestidos</span>
-          <span class="category-card__count">Feminino · 32 peças</span>
+          <span class="category-card__count" data-count-cat="Vestidos">Feminino</span>
         </span>
       </a>
       <a href="elegant-vision-catalogo.html?cat=Alfaiataria" class="category-card cat-f2 reveal">
         <span class="category-card__label">
           <span class="category-card__name">Alfaiataria</span>
-          <span class="category-card__count">Feminino · 18 peças</span>
+          <span class="category-card__count" data-count-cat="Alfaiataria">Feminino</span>
         </span>
       </a>
       <a href="elegant-vision-catalogo.html?cat=Saias" class="category-card cat-f3 reveal">
         <span class="category-card__label">
-          <span class="category-card__name">Saias &amp; Blusas</span>
-          <span class="category-card__count">Feminino · 41 peças</span>
+          <span class="category-card__name">Saias</span>
+          <span class="category-card__count" data-count-cat="Saias">Feminino</span>
+        </span>
+      </a>
+      <a href="elegant-vision-catalogo.html?cat=Blusas" class="category-card cat-f4 reveal">
+        <span class="category-card__label">
+          <span class="category-card__name">Blusas</span>
+          <span class="category-card__count" data-count-cat="Blusas">Feminino</span>
         </span>
       </a>
       <a href="elegant-vision-catalogo.html?cat=Homme" class="category-card category-card--wide cat-m reveal">
         <span class="category-card__label">
           <span class="category-card__name">Linha Masculina</span>
-          <span class="category-card__count">Masculino · 24 peças</span>
+          <span class="category-card__count" data-count-cat="Homme">Masculino</span>
         </span>
       </a>
     </div>
@@ -565,6 +577,12 @@ document.getElementById('featuredGrid').innerHTML=
       <span class="product-card__installments">até 6x de ${EV.BRL(p.price/6)} sem juros</span>
     </div>
   </article>`).join('');
+
+/* Contagem por categoria vinda da fonte única (products.js), evita números fictícios */
+document.querySelectorAll('[data-count-cat]').forEach(el=>{
+  const n=EV.PRODUCTS.filter(p=>p.category===el.dataset.countCat).length;
+  el.textContent=`${el.textContent} · ${n} ${n===1?'peça':'peças'}`;
+});
 
 window.addEventListener('scroll',()=>{
   header.classList.toggle('is-scrolled',window.scrollY>10);

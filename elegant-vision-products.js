@@ -15,7 +15,10 @@
          colors:{Noir:'img/1-noir.webp', Champagne:'img/1-champagne.webp'}
       Os botões de cor na página do produto trocam a foto principal
       pela cor escolhida; a primeira cor listada é a foto padrão nas
-      vitrines. Sem `colors`, o produto usa só as fotos por posição.
+      vitrines. Sem `colors`, o produto usa só as fotos por posição e
+      o seletor de cor não aparece na página do produto.
+      Para o tom do botão (swatch), cadastre o nome em SWATCH_COLORS
+      abaixo; nomes sem entrada usam um tom neutro padrão.
    5. PRODUTO NOVO → copie um bloco, use um `id` inédito.
    6. DESTAQUE DA HOME → featured: true (máx. 4 exibidos).
    ============================================================ */
@@ -101,6 +104,10 @@ window.EV = (() => {
   const img = (id, pos=1) => `img/${id}-${pos}.jpg`;
   const byId = id => PRODUCTS.find(p => p.id === Number(id));
 
+  /* Tom de cada swatch na página do produto. Nomes ausentes caem no tom neutro. */
+  const SWATCH_COLORS = {Noir:'#141216', Champagne:'#D6BC8A', 'Off-White':'#EDE8DE'};
+  const swatchColor = name => SWATCH_COLORS[name] || '#C9C2B4';
+
   /* HTML de foto com fallback automático para o placeholder gradiente.
      Produtos com `colors` usam a foto da primeira cor como imagem padrão. */
   const photoHtml = (p, cls, label='fotografia da peça') => {
@@ -118,9 +125,11 @@ window.EV = (() => {
     set(c){ try{ localStorage.setItem(CART_KEY, JSON.stringify(c)) }catch{} },
     add(item){
       const c = cart.get();
+      const product = byId(item.id);
+      const maxQty = Math.min(10, (product && product.stock && product.stock[item.size]) || 10);
       const same = c.find(i => i.id===item.id && i.color===item.color && i.size===item.size);
-      if(same) same.qty = Math.min(10, same.qty + item.qty);
-      else c.push(item);
+      if(same) same.qty = Math.min(maxQty, same.qty + item.qty);
+      else c.push({...item, qty: Math.min(maxQty, item.qty)});
       cart.set(c);
       return cart.count();
     },
@@ -139,5 +148,5 @@ window.EV = (() => {
     btn.addEventListener('click', () => location.href = 'elegant-vision-sacola.html');
   }
 
-  return { PRODUCTS, SIZES, BRL, img, byId, photoHtml, cart, initHeaderCart };
+  return { PRODUCTS, SIZES, BRL, img, byId, photoHtml, swatchColor, cart, initHeaderCart };
 })();
