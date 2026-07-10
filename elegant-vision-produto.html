@@ -297,39 +297,48 @@ document.getElementById('pdpDescription').textContent=product.desc;
 
 const galleryMain=document.getElementById('galleryMain');
 const thumbs=document.getElementById('galleryThumbs');
-const angles=[160,200,140,185];
+const MAX_POSITIONS=4;
 let selectedColor=product.colors?Object.keys(product.colors)[0]:null,selectedSize=null,qty=1;
 
-function loadMainImage(url,altText,phBackground){
-  const test=new Image();
-  test.onload=()=>{
-    galleryMain.style.background='none';
-    galleryMain.innerHTML=`<img src="${url}" alt="${altText}" style="width:100%;height:100%;object-fit:cover">`;
-  };
-  test.onerror=()=>{
-    galleryMain.innerHTML='fotografia principal da peça';
-    galleryMain.style.background=phBackground;
-  };
-  test.src=url;
+function probeImage(url){
+  return new Promise(resolve=>{
+    const test=new Image();
+    test.onload=()=>resolve(true);
+    test.onerror=()=>resolve(false);
+    test.src=url;
+  });
+}
+function loadMainImage(url,altText){
+  galleryMain.style.background='none';
+  galleryMain.innerHTML=`<img src="${url}" alt="${altText}" style="width:100%;height:100%;object-fit:cover">`;
 }
 function setMainImage(pos){
-  loadMainImage(EV.img(product.id,pos), `${product.name} — imagem ${pos}`, product.ph.replace(/\d+deg/,angles[pos-1]+'deg'));
+  loadMainImage(EV.img(product.id,pos), `${product.name} — imagem ${pos}`);
 }
 function setMainImageForColor(color){
   const url=product.colors&&product.colors[color];
   if(!url)return;
-  loadMainImage(url, `${product.name} — ${color}`, product.ph);
+  loadMainImage(url, `${product.name} — ${color}`);
 }
-if(product.colors&&product.colors[selectedColor]) setMainImageForColor(selectedColor); else setMainImage(1);
-thumbs.innerHTML=angles.map((a,i)=>`
-  <button class="pdp-thumb" type="button" aria-pressed="${i===0}" aria-label="Ver imagem ${i+1}" data-pos="${i+1}">
-    <span style="position:relative;overflow:hidden">
-      <img src="${EV.img(product.id,i+1)}" alt="" loading="lazy"
-        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"
-        onerror="this.remove()">
-      <span style="position:absolute;inset:0;z-index:-1;background:${product.ph.replace(/\d+deg/,a+'deg')}"></span>
-    </span>
-  </button>`).join('');
+
+/* Galeria: só renderiza miniaturas das posições de foto que realmente existem em img/,
+   em vez de assumir sempre 4 ângulos por produto. */
+async function buildGallery(){
+  const found=await Promise.all(Array.from({length:MAX_POSITIONS},(_,i)=>probeImage(EV.img(product.id,i+1))));
+  const positions=found.map((ok,i)=>ok?i+1:null).filter(Boolean);
+  thumbs.innerHTML=positions.map((pos,i)=>`
+    <button class="pdp-thumb" type="button" aria-pressed="${i===0&&!product.colors}" aria-label="Ver imagem ${pos}" data-pos="${pos}">
+      <span style="position:relative;overflow:hidden">
+        <img src="${EV.img(product.id,pos)}" alt="" loading="lazy"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+      </span>
+    </button>`).join('');
+  if(product.colors&&product.colors[selectedColor]) setMainImageForColor(selectedColor);
+  else if(positions.length) setMainImage(positions[0]);
+  else{ galleryMain.innerHTML='fotografia principal da peça'; galleryMain.style.background=product.ph; }
+}
+buildGallery();
+
 thumbs.addEventListener('click',e=>{
   const btn=e.target.closest('.pdp-thumb');
   if(!btn)return;
